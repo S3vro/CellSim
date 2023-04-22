@@ -1,9 +1,16 @@
-package gui;
+package model.gui;
+
+import model.algorithm.Algorithm;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
 public class Grid extends JPanel implements MouseListener {
     private final int width;
@@ -15,11 +22,11 @@ public class Grid extends JPanel implements MouseListener {
     private final int rows;
     private final int columns;
 
-    private final int states;
+    private final Algorithm algorithm;
 
     private final Cell[][] cells;
 
-    public Grid(int width, int height, int rows, int columns, int states){
+    public Grid(int width, int height, int rows, int columns, Algorithm algorithm){
 
         this.width = width;
         this.height = height;
@@ -33,12 +40,11 @@ public class Grid extends JPanel implements MouseListener {
         addMouseListener(this);
 
         this.setPreferredSize(new Dimension(width,height));
-        this.states = states;
-        ColorMap map = new ColorMap(states);
+        this.algorithm = algorithm;
         cells = new Cell[rows][columns];
         for(int i = 0; i < rows; i++){
             for(int j = 0; j < columns; j++){
-                cells[i][j] = new Cell(new Point(i * columnWidth,j * rowHeight),columnWidth,rowHeight, map);
+                cells[i][j] = new Cell(new Point(i * columnWidth,j * rowHeight),columnWidth,rowHeight, this.algorithm.getColorMap());
             }
         }
     }
@@ -61,6 +67,42 @@ public class Grid extends JPanel implements MouseListener {
         }
     }
 
+    public void load(List<List<Integer>> list) {
+        for (int x = 0; x < this.rows; x++) {
+            for (int y = 0; y < this.columns; y++) {
+                cells[x][y].setState(list.get(x).get(y));
+            }
+        }
+        this.update();
+    }
+
+    public void save(File file) {
+        try {
+            StringBuilder saveStringBuilder = new StringBuilder();
+            for (int x = 0; x < this.rows; x++) {
+                for (int y = 0; y < this.columns; y++) {
+                    saveStringBuilder.append(cells[x][y].getState()).append(" ");
+                }
+                saveStringBuilder.deleteCharAt(saveStringBuilder.length() - 1);
+                saveStringBuilder.append("\n");
+            }
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write(saveStringBuilder.toString());
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void step() {
+        for (int x = 0; x < this.rows; x++) {
+            for (int y = 0; y < this.columns; y++) {
+                this.algorithm.step(this.cells, x,y);
+            }
+        }
+        this.update();
+
+    }
     public void reset() {
         for(int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -75,7 +117,7 @@ public class Grid extends JPanel implements MouseListener {
     public void mouseClicked(MouseEvent mouseEvent) {
         Point mousePos = new Point(mouseEvent.getX(),mouseEvent.getY());
         Cell cell = cells[(int)(mousePos.x/columnWidth)][(int)(mousePos.y/rowHeight)];
-        cell.setState((cell.getState() + 1) % this.states);
+        cell.setState((cell.getState() + 1) % this.algorithm.getStateCount());
         this.update();
     }
 
