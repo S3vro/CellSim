@@ -20,14 +20,14 @@ public class StatePosition {
     }
 
     public int state() {
-        return state;
+        return this.state;
     }
 
     public int x() {
-        return x;
+        return this.x;
     }
 
     public int y() {
-        return y;
+        return this.y;
     }
 }

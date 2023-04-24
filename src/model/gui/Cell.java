@@ -31,7 +31,7 @@ public final class Cell {
 
     public void update() {
         this.state = this.newState;
-        this.color = colorMap.get(state);
+        this.color = this.colorMap.get(this.state);
     }
 
     public int getState() {
@@ -41,8 +41,8 @@ public final class Cell {
     public void draw(Graphics g) {
         this.update();
         g.setColor(this.color);
-        g.fillRect(position.x, position.y, width,height);
+        g.fillRect(this.position.x, this.position.y, this.width,this.height);
         g.setColor(Color.BLACK);
-        g.drawRect(position.x, position.y, width, height);
+        g.drawRect(this.position.x, this.position.y, this.width, this.height);
     }
 }
