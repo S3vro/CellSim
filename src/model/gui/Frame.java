@@ -24,7 +24,7 @@ import javax.swing.*;
 public class Frame extends JFrame implements ActionListener {
 
     private static final String FILE_EXT = ".cell";
-    private final Grid grid;
+    private Grid grid;
     private final JPanel container;
     private final JPanel controlPanel;
     private final JPanel buttonPanel;
@@ -40,9 +40,13 @@ public class Frame extends JFrame implements ActionListener {
     private final JLabel stepSpinnerLabel;
     private ScheduledExecutorService currentService;
 
-    public Frame(Algorithm algorithm){
+    private final int GRID_WIDTH = 500;
+    private final int GRID_HEIGHT = 500;
+    private Algorithm algorithm;
 
-        grid = new Grid(800,800,7,7, algorithm);
+    public Frame(Algorithm algorithm){
+        this.algorithm = algorithm;
+        grid = new Grid(GRID_WIDTH, GRID_HEIGHT,20,20, algorithm);
 
         container = new JPanel(new BorderLayout());
         controlPanel = new JPanel(new BorderLayout());
@@ -128,6 +132,7 @@ public class Frame extends JFrame implements ActionListener {
                             List<Integer> values = Arrays.stream(s.split(" ")).map(Integer::valueOf).toList();
                             Collections.addAll(states, values);
                         }
+                        //this.grid = new Grid(GRID_WIDTH, GRID_HEIGHT, states.size(), states.get(0).size(), algorithm);
                         this.grid.load(states);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);

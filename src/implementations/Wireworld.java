@@ -80,6 +80,6 @@ public class Wireworld implements Algorithm {
 
     @Override
     public Map<Integer, Color> getColorMap() {
-        return Map.of(0, Color.WHITE, 1, Color.BLACK, 2, Color.BLUE, 3, Color.ORANGE);
+        return Map.of(0, Color.BLACK, 1, Color.WHITE, 2, Color.BLUE, 3, Color.ORANGE);
     }
 }

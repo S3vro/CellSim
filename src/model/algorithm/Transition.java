@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Transition {
 
-    private final int transitionToState;
+    protected int transitionToState;
     private final List<StatePosition> transitionCircumstances = new ArrayList<>();
 
     public Transition(int transitionToState, StatePosition... transitions) {
